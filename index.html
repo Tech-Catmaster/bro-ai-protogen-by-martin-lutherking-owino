@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0c">
+  <meta name="description" content="Protogen AI — Your intelligent voice companion.">
+  <title>Protogen AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="assistant" id="assistant">
+
+    <!-- Top navigation -->
+    <header class="topbar">
+      <div class="top-left">
+        <button class="icon-button" id="accountButton" aria-label="Account" title="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20c.6-3.5 3.1-5.3 7-5.3s6.4 1.8 7 5.3"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="brand">Protogen AI</div>
+
+      <div class="top-right">
+        <details class="menu-container">
+          <summary class="icon-button menu-button" aria-label="Open menu" title="Menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle class="dot" cx="12" cy="5" r="1.8"></circle>
+              <circle class="dot" cx="12" cy="12" r="1.8"></circle>
+              <circle class="dot" cx="12" cy="19" r="1.8"></circle>
+            </svg>
+          </summary>
+          <div class="menu-dropdown">
+            <button type="button" id="menuAccount">Account</button>
+            <button type="button" id="menuSettings">Settings</button>
+            <div class="menu-divider"></div>
+            <button type="button" id="aboutButton">About Protogen</button>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <!-- Main experience -->
+    <section class="main-layout">
+      <div class="hero">
+        <h1 id="greeting">Hello, Martin.</h1>
+        <p class="status" id="status">Touch the orb to talk to Bro.</p>
+
+        <div class="orb-stage" id="orbWrap">
+          <div class="wave-side wave-left" aria-hidden="true">
+            <span class="wave-line"></span><span class="wave-img"></span>
+          </div>
+
+          <button class="orb-trigger" id="voiceButton" aria-label="Tap to speak to Protogen">
+            <span class="orb-img"></span>
+          </button>
+
+          <div class="wave-side wave-right" aria-hidden="true">
+            <span class="wave-img"></span><span class="wave-line"></span>
+          </div>
+        </div>
+
+        <p class="tagline">Your intelligent voice companion.<br>Tap the orb and start talking.</p>
+
+        <section class="conversation-area" aria-live="polite" aria-label="Conversation">
+          <div class="conversation" id="conversation"></div>
+        </section>
+
+        <form class="composer" id="composer">
+          <input id="question" type="text" autocomplete="off" placeholder="Type a message…" aria-label="Ask Protogen">
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Bottom controls -->
+    <nav class="controls" aria-label="Voice controls">
+      <button class="ctrl" id="chatButton" aria-label="Type a message" title="Type a message">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3.5V17H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path>
+          <path d="M8 10h8M8 13h5"></path>
+        </svg>
+      </button>
+
+      <button class="ctrl mic" id="micButton" aria-label="Talk to Protogen" title="Talk">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"></path>
+        </svg>
+      </button>
+
+      <button class="ctrl" id="stopButton" aria-label="Stop" title="Stop">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Utility dialog -->
+    <dialog class="utility-dialog" id="utilityDialog">
+      <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
+      <div class="dialog-symbol">✦</div>
+      <h2 id="dialogTitle">Protogen AI</h2>
+      <p id="dialogText">Your intelligent voice companion.</p>
+    </dialog>
+
+    <div class="interface-toast" id="toast" role="status"></div>
+  </main>
+
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+
+      const on = (id, fn) => {
+        const el = $(id);
+        if (el) el.addEventListener("click", fn);
+      };
+
+      const dialog = $("utilityDialog");
+      const menu = document.querySelector(".menu-container");
+      const assistant = $("assistant");
+
+      function showDialog(title, text) {
+        if (!dialog) return;
+
+        $("dialogTitle").textContent = title;
+        $("dialogText").textContent = text;
+
+        if (!dialog.open) dialog.showModal();
+      }
+
+      const closeMenu = () => {
+        if (menu) menu.open = false;
+      };
+
+      on("accountButton", () => {
+        showDialog("Your account", "Your Protogen account experience.");
+      });
+
+      on("menuAccount", () => {
+        closeMenu();
+        showDialog("Your account", "Your Protogen account experience.");
+      });
+
+      on("menuSettings", () => {
+        closeMenu();
+        showDialog("Settings", "Personalise your Protogen experience.");
+      });
+
+      on("aboutButton", () => {
+        closeMenu();
+        showDialog("About Protogen", "Protogen AI — an intelligent voice companion created by Martin.");
+      });
+
+      on("dialogClose", () => dialog?.close());
+
+      if (dialog) {
+        dialog.addEventListener("click", event => {
+          if (event.target === dialog) dialog.close();
+        });
+      }
+
+      on("micButton", () => $("voiceButton")?.click());
+
+      on("chatButton", () => {
+        if (!assistant) return;
+
+        const open = assistant.classList.toggle("typing");
+
+        if (open) $("question")?.focus();
+      });
+
+      on("stopButton", () => {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+
+        assistant?.classList.remove(
+          "listening",
+          "thinking",
+          "speaking",
+          "typing"
+        );
+      });
+    })();
+  </script>
+
+  <script src="./roast-engine.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>
